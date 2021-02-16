@@ -55,34 +55,45 @@ char		*ft_itoa(int n)
 }
 
 
-int		ft_int_width(t_flags flags, char *c, char len)
+
+
+int 	ft_int_width(t_flags flags, char *c, int len)
 {
 	int i;
 
 	i = 0;
 	if (flags.zero == 1)
 	{
-		while (flags.width-- > len)
-		{	
-			ft_putnbr(0);
-			i++;
-		}
-		ft_puts(c);
+		i+=ft_print_zero(flags.width - len);
+		i+=ft_puts(c);
 	}
 	else
 	{
 		if (flags.minus == 1)
-		{	
-			ft_putchar(' ');
-			ft_puts(c);
-		}
-		while (flags.width-- > len)
-		{
-			ft_putchar(' ');
-			i++;
-		}
+			i+=ft_puts(c);
+		i+=ft_print_space(flags.width - len);
 		if (flags.minus == 0)
-			ft_puts(c);
+			i+=ft_puts(c);
+	}
+	return(i);
+}
+
+int 	ft_int_widthandprec(t_flags flags, char *c, int len)
+{
+	int i;
+
+	i = 0;
+	if (flags.minus == 1)
+	{
+		i+=ft_print_zero(flags.prec - len);
+		i+=ft_puts(c);
+		i+=ft_print_space(flags.width - flags.prec);
+	}
+	else
+	{
+		i+=ft_print_space(flags.width - flags.prec);
+		i+=ft_print_zero(flags.prec - len);
+		i+=ft_puts(c);
 	}
 	return(i);
 }
@@ -98,16 +109,18 @@ int		ft_printint(va_list ap, t_flags flags)
 	n = va_arg(ap, int);
 	c = ft_itoa(n);
 	len = ft_strlen(c);
-	if (flags.width > 0)
+
+	if (flags.width > len && flags.prec >= len)
+		i = ft_int_widthandprec(flags, c, len);
+	else if (flags.width > len)
 		i = ft_int_width(flags, c, len);
 	else if (flags.prec > 0 && flags.width == 0)
 	{
-		while (flags.prec-- > len)
-			ft_putnbr(0);
-		ft_puts(c);
+			i+=ft_print_zero(flags.prec - len);
+		i+=ft_puts(c);
 	}
 	else 
-		ft_puts(c);
+		i+=ft_puts(c);
 	return(i);
 }
 	

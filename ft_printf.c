@@ -13,6 +13,32 @@
 #include "ft_printf.h"
 
 
+int 	ft_print_zero(int n)
+{
+	int i;
+
+	i = 0;
+	while(n--)
+	{
+		ft_putchar('0');
+		i++;
+	}
+	return(i);
+}
+
+int 	ft_print_space(int n)
+{
+	int i;
+
+	i = 0;;
+	while(n--)
+	{
+		ft_putchar(' ');
+		i++;
+	}
+	return(i);
+}
+
 int 	ft_strlen(char *c)
 {
 	int i;
@@ -23,7 +49,7 @@ int 	ft_strlen(char *c)
 	return(i);
 }
 
-void	ft_puts(char *s)
+int 	ft_puts(char *s)
 {
 	int i;
 
@@ -33,11 +59,13 @@ void	ft_puts(char *s)
 		ft_putchar(s[i]);
 		i++;
 	}
+	return(i);
 }
 
-void ft_putchar(char c)
+int  ft_putchar(char c)
 {
 	write(1, &c, 1);
+	return(1);
 }
 
 void	ft_putnbr(int nb)
@@ -82,35 +110,13 @@ int		ft_isdigit(int c)
 	return (0);
 }
 
-void	ft_stampaprimadellapercentuale(const char *f)
+
+t_flags		ft_init_flags(int i)
 {
-	int i;
-
-	i = 0;
-	while(f[i] != '%' && f[i])
-	{
-		ft_putchar(f[i]);
-		i++;
-	}
-}
-
-int 	ft_count(const char *format)
-{
-	int i;
-
-	i = 0;
-	while (format[i] != '%' && format[i])
-		i++;
-	return(i);
-}
-
-
-t_flags		ft_init_flags(const char *format)
-{
-	int i;
+	//int i;
 	t_flags		flags;
 
-	i = ft_count(format);
+	//i = ft_count(format);
 	flags.prec = - 1;
 	flags.minus = 0;
 	flags.width = 0;
@@ -164,7 +170,7 @@ t_flags		ft_init_precision(t_flags flags, const char *format, va_list ap)
 
 t_flags 	ft_parsing(const char *format, t_flags flags, va_list ap)
 {
-	flags = ft_init_flags(format);
+	//flags = ft_init_flags(format);
 
 	while (format[flags.i] == '-' || format[flags.i] == '0')
 	{
@@ -188,45 +194,102 @@ t_flags 	ft_parsing(const char *format, t_flags flags, va_list ap)
 	return(flags);
 }
 
+int 	ft_checkprec(const char *f, int j)
+{
+	if (f[j] == '*' || f[j] == '-' || ft_isdigit(f[j]))
+	{
+		if (f[j] == '*')
+			j++;
+		else if (f[j] == '-' && ft_isdigit(f[j + 1]))
+		{
+			j++;
+			while (ft_isdigit(f[j]))
+				j++;
+		}
+		else if (ft_isdigit(f[j]))
+			while (ft_isdigit(f[j]))
+				j++;
+	}
+	return (j);
+}
 
 
-int 	ft_printf(const char *format, ...)
+int 	ft_checkformat(const char *f, int i)
+{
+	int j;
+
+	j = i + 1;
+	while (f[j] == '-' || f[j] == '0')
+		j++;
+	if (f[j] == '*' || ft_isdigit(f[j]))
+	{
+		if (f[j] == '*')
+			j++;
+		else
+			while (ft_isdigit(f[j]))
+				j++;
+	}
+	if (f[j] == '.')
+	{
+		j++;
+		j = ft_checkprec(f, j);
+	}
+	if (ft_check(f[j]))
+		return(j + 1);
+	return(0);
+}
+
+
+int 	ft_tipo(t_flags flags, va_list ap)
 {
 	int n;
-	t_flags flags;
 
-	va_list ap;
-
-	va_start(ap, format);
-	flags = ft_init_flags(format);
-	ft_stampaprimadellapercentuale(format);
-	flags = ft_parsing(format, flags, ap);
-	n = flags.i;
-	/*n = flags.i;
-	printf("%d", n);
-	return(0);*/
-
+	n = 0;
+	//flags = ft_parsing(format, flags, ap, i);
 	if (flags.type == 'd' || flags.type == 'i')
 		n += ft_printint(ap, flags);
 	if (flags.type == 'x')
 		n += ft_x(ap);
 	if (flags.type == 's')
 		n += ft_printstr(ap, flags);
-	/*printf("type: %c\n", flags.type);
-	printf("minus: %d\n", flags.minus);
-	printf("zero: %d\n", flags.zero);
-	printf("prec: %d\n", flags.prec);
-	printf("width: %d\n", flags.width);
+	if (flags.type == 'c')
+		n += ft_printchar(ap, flags);
 
+	return (n);
+}
 
-	n = va_arg(ap, int);
+int 	ft_printf(const char *format, ...)
+{
+	int n;
+	int i;
+	t_flags flags;
+	va_list ap;
 
-	//ft_putnbr(n);
-
-
-	va_end(ap);*/
-
-	return(n);
+	va_start(ap, format);
+	//n = ft_count(format);
+	n = 0;
+	i = 0;
+	//ft_stampaprimadellapercentuale(format);
+	//flags = ft_parsing(format, flags, ap);
+	while (format[i])
+	{
+		if (format[i] == '%' && ft_checkformat(format, i))
+		{
+			flags = ft_init_flags(i);
+			flags = ft_parsing(format, flags, ap);
+			n += ft_tipo(flags, ap);
+			i = ft_checkformat(format, i);
+		}
+		else if (!format[i])
+			break;
+		else
+		{
+			n += ft_putchar(format[i]);
+			i++;
+		}
+	}
+	va_end (ap);
+	return (n);
 }
 
 int 	main()
@@ -235,12 +298,23 @@ int 	main()
 
 
 	//ft_printf(f, 12);
+	//printf("%d %s\n", 12, "ciao");
 
+	//ft_printf("%d %s", 12, "ciao");
 
-	ft_printf("fakeprint:%.*s", 2, "ammo");
-	write(1, "\n", 1);
+	//printf("return: %d\n", ft_printf("mioo: %d", 1234567));
+	//printf("return: %d\n", ft_printf("vero: %d", 1234567));
+	//printf("return: %d\n", ft_printf("ft: %010d %10s\n", 123, "porcodio"));
+	//printf("return: %d\n", printf("pr: %010d %10s\n", 123, "porcodio"));
+	
+	printf("%d", ft_printf("%-10c", 'a'));
+	printf("%d", printf("%-10c", 'a'));
+	
 
-	printf("realprint:%.*s", 2, "ammo");
+	//printf("%d", 123456789);
+	//printf("return: %d\n", ft_printf("fake:%-.10d\n", 123));
+	
+	//printf("return: %d\n", printf("real:%-.10d\n", 123));
 	
 }
 

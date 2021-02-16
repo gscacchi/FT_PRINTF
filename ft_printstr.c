@@ -20,15 +20,15 @@ int		ft_str_width(char *s, t_flags flags, int l)
 
 	i = 0;
 	if (flags.minus == 1)
-		ft_puts(s);
+		i+=ft_puts(s);
 	while(flags.width-- > l)
 	{
 		ft_putchar(' ');
 		i++;
 	}
 	if (flags.minus == 0)
-		ft_puts(s);
-	return(l);
+		i+=ft_puts(s);
+	return(i);
 }
 
 int		ft_str_prec(char *s, t_flags flags, int l)
@@ -44,7 +44,7 @@ int		ft_str_prec(char *s, t_flags flags, int l)
 	else if (flags.prec >= l)
 	{
 		ft_puts(s);
-		k = l;
+		k += l;
 	}
 	return(k);
 }
@@ -55,6 +55,7 @@ int		ft_printstr(va_list ap, t_flags flags)
 	char *s;
 	int len;
 
+	i = 0;
 	s = va_arg(ap, char *);
 	len = ft_strlen(s);
 
@@ -63,7 +64,7 @@ int		ft_printstr(va_list ap, t_flags flags)
 	else if (flags.prec > 0)
 		i = ft_str_prec(s, flags, len);
 	else
-		ft_puts(s);
+		i =ft_puts(s);
 	return(i);
 
 }
