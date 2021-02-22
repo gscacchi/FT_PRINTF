@@ -24,12 +24,12 @@ int 	ft_printchar(va_list ap, t_flags flags)
 
 	if (flags.width > 1)
 	{
-		if (flags.minus == 1)
-			ft_putchar(c);
-		while (flags.width-- > 0)
+		if (flags.minus == 1) 
+			i += ft_putchar(c);
+		while (flags.width-- > 1)
 			i += ft_putchar(' ');
 		if (flags.minus == 0)
-			ft_putchar(c);
+			i += ft_putchar(c);
 	}
 	else
 		i += ft_putchar(c);

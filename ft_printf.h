@@ -27,12 +27,13 @@ typedef struct 		s_flags
 	char type;
 	int zero;
 	int i;
+	int neg;
 }					t_flags;
 
 int 	ft_printf(const char *format, ...);
 int 	ft_decimal(va_list ap);
-int ft_x(va_list ap);
-int	ft_puts(char *s);
+int		ft_x(va_list ap, t_flags flags);
+int 	ft_puts(char *s);
 int  ft_putchar(char c);
 char *ft_arr(char *exa);
 int len(char *str);
@@ -44,8 +45,7 @@ t_flags		ft_init_flags(int i);
 int 	ft_count(const char *format);
 int 	ft_strlen(char *c);
 void	ft_putnbr(int nb);
-int		ft_printint(va_list ap, t_flags flags);
-char		*ft_itoa(int n);
+char		*ft_itoa(int n, t_flags *flags);
 int			ft_len(long int nbr);
 long int	ft_abs(long int nbr);
 int		ft_printstr(va_list ap, t_flags flags);
@@ -55,5 +55,14 @@ int 	ft_print_zero(int n);
 int 	ft_print_space(int n);
 int 	ft_printchar(va_list ap, t_flags flags);
 int 	ft_putchar(char c);
+int 	ft_int_width(t_flags flags, char *c, int len);
+int 	ft_int_widthandprec(t_flags flags, char *c, int len);
+int		ft_printint(va_list ap, t_flags flags);
+int 	ft_printpoint(va_list ap, t_flags flags);
+char *reverse1(char *str);
+int	ft_widthpoint(t_flags flags, char *ris);
+char 	*ft_convert_x(char *exa);
+char	*ft_removeminus(char *c);
+
 
 #endif

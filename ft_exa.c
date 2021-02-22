@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+/*#include "ft_printf.h"
 
 char *ft_arr(char *exa)
 {
@@ -78,4 +78,4 @@ int ft_x(va_list ap)
     ris[i] = '\0';
     ft_puts(reverse(ris));
     return (1);
-}
+}*/

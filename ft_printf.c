@@ -6,12 +6,11 @@
 /*   By: gscala <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 10:49:23 by gscala            #+#    #+#             */
-/*   Updated: 2021/02/11 10:49:24 by gscala           ###   ########.fr       */
+/*   Updated: 2021/02/18 15:40:00 by gscala           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-
 
 int 	ft_print_zero(int n)
 {
@@ -44,7 +43,7 @@ int 	ft_strlen(char *c)
 	int i;
 
 	i = 0;
-	while(c[i])
+	while(c[i] != 0)
 		i++;
 	return(i);
 }
@@ -52,7 +51,8 @@ int 	ft_strlen(char *c)
 int 	ft_puts(char *s)
 {
 	int i;
-
+	if (!*s)
+		return(0);
 	i = 0;
 	while (s[i])
 	{
@@ -248,12 +248,14 @@ int 	ft_tipo(t_flags flags, va_list ap)
 	//flags = ft_parsing(format, flags, ap, i);
 	if (flags.type == 'd' || flags.type == 'i')
 		n += ft_printint(ap, flags);
-	if (flags.type == 'x')
-		n += ft_x(ap);
+	if (flags.type == 'x' || flags.type == 'X')
+		n += ft_x(ap, flags);
 	if (flags.type == 's')
 		n += ft_printstr(ap, flags);
 	if (flags.type == 'c')
 		n += ft_printchar(ap, flags);
+	if (flags.type == 'p')
+		n += ft_printpoint(ap, flags);
 
 	return (n);
 }
@@ -266,11 +268,8 @@ int 	ft_printf(const char *format, ...)
 	va_list ap;
 
 	va_start(ap, format);
-	//n = ft_count(format);
 	n = 0;
 	i = 0;
-	//ft_stampaprimadellapercentuale(format);
-	//flags = ft_parsing(format, flags, ap);
 	while (format[i])
 	{
 		if (format[i] == '%' && ft_checkformat(format, i))
@@ -292,6 +291,7 @@ int 	ft_printf(const char *format, ...)
 	return (n);
 }
 
+/*
 int 	main()
 {
 	//ft_printf("%*d", 12, 2);
@@ -301,14 +301,22 @@ int 	main()
 	//printf("%d %s\n", 12, "ciao");
 
 	//ft_printf("%d %s", 12, "ciao");
-
+	ft_printf("%%");
 	//printf("return: %d\n", ft_printf("mioo: %d", 1234567));
 	//printf("return: %d\n", ft_printf("vero: %d", 1234567));
 	//printf("return: %d\n", ft_printf("ft: %010d %10s\n", 123, "porcodio"));
 	//printf("return: %d\n", printf("pr: %010d %10s\n", 123, "porcodio"));
+	//printf("returnmio: %d\n", ft_printf("mio: %015.27x\n", 17244));
+	//printf("return %d\n", ft_printf("mio %-.3s\n", "aereo"));
+	//printf("return %d\n",printf("tuo %-.3s\n", "aereo"));
+	//printf("returntuo: %d\n", printf("ver: %015.27x", 17244));
+
+	//ft_printf("mio: %10.5d\n", 1724);
+	//printf("ver: %10.5d", 1724);
+
+	//printf("return: %d\n", ft_printf("%d ablo %s\n", 123, "abcd"));
+	//printf("return: %d", printf("%d ablo %s\n", 123, "abcd"));
 	
-	printf("%d", ft_printf("%-10c", 'a'));
-	printf("%d", printf("%-10c", 'a'));
 	
 
 	//printf("%d", 123456789);
@@ -317,29 +325,4 @@ int 	main()
 	//printf("return: %d\n", printf("real:%-.10d\n", 123));
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+*/
