@@ -12,6 +12,53 @@
 
 #include "ft_printf.h"
 
+int ft_printpercent(t_flags *flags)
+{
+	int count;
+	char c;
+
+	c = '%';
+	count = 0;
+	if (flags->width > 1)
+	{
+		if (flags->minus == 1 || flags->zero == 1)
+		{
+			if (flags->minus == 0)
+			{
+				count += ft_print_zero(flags->width - 1);
+				count += ft_putchar(c);
+			}
+			else
+			{
+				count += ft_putchar(c);
+				count += ft_print_space(flags->width - 1);
+			}
+		}
+		else
+		{
+			count += ft_print_space(flags->width - 1);
+			count += ft_putchar(c);
+		}
+	}
+	else
+		count += ft_putchar(c);
+	return (count);
+}
+
+int 	ft_puts2(char *s, int c)
+{
+	int i;
+	if (!*s)
+		return(0);
+	i = 0;
+	while (i < c)
+	{
+		ft_putchar(s[i]);
+		i++;
+	}
+	return(i);
+}
+
 int 	ft_print_zero(int n)
 {
 	int i;
@@ -88,7 +135,7 @@ int 	ft_check(int c)
 {
 	if (c == 'd' || c == 'i' || c == 'u' || c == 'x')
 		return(1);
-	if (c == 'X' || c == 's' || c == 'p' || c == 'c' )
+	if (c == 'X' || c == 's' || c == 'p' || c == 'c' || c =='%')
 		return(1);
 	return(0);
 }
@@ -157,7 +204,7 @@ t_flags		ft_init_precision(t_flags flags, const char *format, va_list ap)
 	{
 		flags.prec = va_arg(ap, int);
 		if (flags.prec < 0)
-			flags.prec = -flags.prec;
+			//flags.prec = -flags.prec;
 		flags.i++;
 	}
 	else if (ft_isdigit(format[flags.i]))
@@ -171,7 +218,6 @@ t_flags		ft_init_precision(t_flags flags, const char *format, va_list ap)
 t_flags 	ft_parsing(const char *format, t_flags flags, va_list ap)
 {
 	//flags = ft_init_flags(format);
-
 	while (format[flags.i] == '-' || format[flags.i] == '0')
 	{
 		if (format[flags.i] == '-')
@@ -187,11 +233,17 @@ t_flags 	ft_parsing(const char *format, t_flags flags, va_list ap)
 	if (format[flags.i] == '.' && format[flags.i + 1])
 		flags = ft_init_precision(flags, format, ap);
 	else
+		while (!ft_check(format[flags.i]))
+			flags.i++;
+	flags.type = format[flags.i];
+	return(flags);
+	/*
+	else
 		while (!ft_isalpha(format[flags.i]))
 			flags.i++;
 	flags.type = format[flags.i];
-
 	return(flags);
+	*/
 }
 
 int 	ft_checkprec(const char *f, int j)
@@ -256,6 +308,10 @@ int 	ft_tipo(t_flags flags, va_list ap)
 		n += ft_printchar(ap, flags);
 	if (flags.type == 'p')
 		n += ft_printpoint(ap, flags);
+	if (flags.type == 'u')
+		n += ft_printu(ap, flags);
+	if (flags.type == '%')
+		n += ft_printpercent(&flags);
 
 	return (n);
 }
@@ -291,6 +347,7 @@ int 	ft_printf(const char *format, ...)
 	return (n);
 }
 
+
 /*
 int 	main()
 {
@@ -301,7 +358,8 @@ int 	main()
 	//printf("%d %s\n", 12, "ciao");
 
 	//ft_printf("%d %s", 12, "ciao");
-	ft_printf("%%");
+	ft_printf("%010.*i", -2, 8);
+	//ft_printf("%10.5s", "abcd");
 	//printf("return: %d\n", ft_printf("mioo: %d", 1234567));
 	//printf("return: %d\n", ft_printf("vero: %d", 1234567));
 	//printf("return: %d\n", ft_printf("ft: %010d %10s\n", 123, "porcodio"));

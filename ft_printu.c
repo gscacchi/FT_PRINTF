@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printint.c                                      :+:      :+:    :+:   */
+/*   ft_printu.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gscala <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/02/12 11:45:02 by gscala            #+#    #+#             */
-/*   Updated: 2021/02/21 13:51:49 by gscala           ###   ########.fr       */
+/*   Created: 2021/02/25 15:55:18 by gscala            #+#    #+#             */
+/*   Updated: 2021/02/25 15:55:27 by gscala           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-
+/*
 long int	ft_abs(long int nbr)
 {
 	return ((nbr < 0) ? -nbr : nbr);
@@ -30,15 +30,13 @@ int			ft_len(long int nbr)
 	}
 	return (len);
 }
+*/
 
-char		*ft_itoa(int n, t_flags *flags)
+char		*ft_utoa(size_t n)
 {
 	int		len;
-	int		sign;
 	char	*c;
 
-	flags->neg = 0;
-	sign = (n < 0) ? -1 : 1;
 	len = ft_len(n);
 	c = (char *)malloc(sizeof(char) * len + 1);
 	if (c == NULL)
@@ -51,15 +49,10 @@ char		*ft_itoa(int n, t_flags *flags)
 		n = ft_abs(n / 10);
 		len--;
 	}
-	if (sign == -1)
-	{
-		flags->neg = 1;
-		flags->width--;
-		c = ft_removeminus(c);
-	}
 	return (c);
 }
 
+/*
 char	*ft_removeminus(char *c)
 {
 	char *str;
@@ -74,7 +67,6 @@ char	*ft_removeminus(char *c)
 		return(NULL);
 	while (c[i])
 		str[k++] = c[i++];
-	str[k] = 0;
 	free(c);
 	return(str);
 }
@@ -86,7 +78,7 @@ int 	ft_int_width(t_flags flags, char *c, int len)
 	int i;
 
 	i = 0;
-	if (flags.zero == 1 && flags.prec < 0)
+	if (flags.zero == 1 && flags.prec == -1)
 	{
 		if (flags.neg == 1)
 			i += ft_putchar('-');
@@ -109,7 +101,9 @@ int 	ft_int_width(t_flags flags, char *c, int len)
 	}
 	return(i);
 }
+*/
 
+/*
 int 	ft_int_widthandprec(t_flags flags, char *c, int len)
 {
 	int i;
@@ -117,7 +111,7 @@ int 	ft_int_widthandprec(t_flags flags, char *c, int len)
 	i = 0;
 	if (flags.minus == 1)
 	{
-		if (flags.neg == 1 && flags.type != 'u')
+		if (flags.neg == 1)
 			i += ft_putchar('-');
 		i+=ft_print_zero(flags.prec - len);
 		i+=ft_puts(c);
@@ -126,47 +120,49 @@ int 	ft_int_widthandprec(t_flags flags, char *c, int len)
 	else
 	{
 		i+=ft_print_space(flags.width - flags.prec);
-		if (flags.neg == 1 && flags.type != 'u')
+		if (flags.neg == 1)
 			i += ft_putchar('-');
 		i+=ft_print_zero(flags.prec - len);
 		i+=ft_puts(c);
 	}
 	return(i);
 }
+*/
 
 
-
-int		ft_printint(va_list ap, t_flags flags)
+int		ft_printu(va_list ap, t_flags flags)
 {
 	int i;
-	int n;
+	unsigned int n;
 	int len;
 	char *c;
 
 	i = 0;
-	//if (flags.type == 'u')
-	//	n = va_arg(ap, unsigned int);
-	//else
-	//	n = va_arg(ap, int);
-	n = va_arg(ap, int);
 	/*
-	if (flags.type == 'u' && (unsigned)n >= 4294967295)
+	if (n == 4294967295u)
+	{
+		c = "4294967295";
+		i += ft_puts(c);
+		return(i);
+	}
+	if (n > 4294967295)
 	{
 		i += ft_putchar('-');
 		i += ft_putchar('1');
 		return(i);
 	}
 	*/
-	c = ft_itoa(n, &flags);
+	n = va_arg(ap, unsigned int);
+	c = ft_utoa(n);
 	if (flags.prec == 0 && c[0] == '0')
 		c[0] = 0;
-	if (flags.minus == 1 && flags.zero == 1)
+	if ((flags.minus == 1 && flags.zero == 1))
 		flags.zero = 0;
 	len = ft_strlen(c);
 	if (flags.prec > flags.width && flags.prec > len)
 	{
-		if (flags.neg == 1)
-			i += ft_putchar('-');
+		//if (flags.neg == 1)
+		//	i += ft_putchar('-');
 		i += ft_print_zero(flags.prec - len);
 		i += ft_puts(c);
 	}
@@ -176,27 +172,14 @@ int		ft_printint(va_list ap, t_flags flags)
 		i += ft_int_width(flags, c, len);
 	else if (flags.prec > 0 && flags.width == 0)
 	{
-		if (flags.neg == 1)
-			i += ft_putchar('-');
 		if (flags.prec > len)
 			i+=ft_print_zero(flags.prec - len);
 		i+=ft_puts(c);
 	}
 	else 
 	{
-		if (flags.neg == 1)
-			i += ft_putchar('-');
 		i+=ft_puts(c);
 	}
 	return(i);
 }
-	
-
-
-
-
-
-
-
-
 

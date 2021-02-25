@@ -44,13 +44,23 @@ int ft_printpoint(va_list ap, t_flags flags)
 	resto = 0;
 	p = va_arg(ap, size_t);
 	ft_convert_x(exa);
-	while(p > 0)
+	if (p == 0)
 	{
-		resto = p % 16;
-		ris[i++] = exa[resto];
-		p = p / 16;
+		ris[i] = '0';
+		i++;
 	}
-	ris[i] = 0;
+	
+	else
+	{
+		while(p > 0)
+		{
+			resto = p % 16;
+			ris[i++] = exa[resto];
+			p = p / 16;
+		}
+
+	}
+	ris[i] = '\0';
 	//printf("%s\n", reverse1(ris));
 	//return(0);
 
@@ -66,16 +76,40 @@ int	ft_widthpoint(t_flags flags, char *ris)
 
 	i = 0;
 	len = ft_strlen(ris);
-	if (flags.width > len && flags.minus == 0)
+	if (flags.width >= len && flags.minus == 0 && len >= 11)
 	{
 		i += ft_print_space(flags.width - len);
 		i += ft_puts(ris);
 	}
-	else if (flags.width > len && flags.minus == 1)
+	else if (flags.width >= len && flags.minus == 1 && len >= 11)
 	{
 		i += ft_puts(ris);
 		i += ft_print_space(flags.width - len);
 	}
+	else if(flags.width >= len && len < 11 && flags.prec == -1)
+	{
+		i += ft_print_space(flags.width - len);
+		i += ft_puts(ris);
+	}
+	else if (flags.prec < len && flags.width >= len)
+	{
+		if (len == 3)
+		{
+			i += ft_print_space(flags.width - len + 1);
+			i += ft_puts2(ris, (flags.prec + 2));
+		}
+		else
+		{
+			i += ft_print_space(flags.width - len);
+			i += ft_puts(ris);
+		}
+		
+	}
+	else if (flags.prec < len && len < 11 && flags.prec != -1)
+	{
+		i += ft_puts2(ris, (flags.prec + 2));
+	}
+	else if (flags.width < len)
+		i += ft_puts(ris);
 	return (i);
 }
-

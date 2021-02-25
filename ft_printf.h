@@ -44,7 +44,7 @@ t_flags 	ft_init_width(t_flags flags, const char *format, va_list ap);
 t_flags		ft_init_flags(int i);
 int 	ft_count(const char *format);
 int 	ft_strlen(char *c);
-void	ft_putnbr(int nb);
+void 	ft_putnbr();
 char		*ft_itoa(int n, t_flags *flags);
 int			ft_len(long int nbr);
 long int	ft_abs(long int nbr);
@@ -63,6 +63,9 @@ char *reverse1(char *str);
 int	ft_widthpoint(t_flags flags, char *ris);
 char 	*ft_convert_x(char *exa);
 char	*ft_removeminus(char *c);
+int 	ft_puts2(char *s, int c);
+int		ft_printu(va_list ap, t_flags flags);
+
 
 
 #endif

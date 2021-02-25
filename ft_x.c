@@ -106,20 +106,20 @@ int 	ft_regxcase(t_flags flags, char *c)
 
 int 	ft_x(va_list ap, t_flags flags)
 {
-	int n;
-	int resto;
-	char ris[101];
+	unsigned int n;
+	unsigned int resto;
+	char ris[9];
 	char exa[17];
 	int i;
 
 	resto = 0;
-	n = va_arg(ap, int);
+	n = va_arg(ap, unsigned int);
 	if (flags.type == 'x')
 		ft_convert_x(exa);
 	if (flags.type == 'X')
 		ft_convert_X(exa);
 	i = 0;
-	if (n == -1)
+	/*if (n == -1)
 	{
 		while(i < 8)
 		{
@@ -127,7 +127,8 @@ int 	ft_x(va_list ap, t_flags flags)
 			i++;
 		}
 	}
-	else if (n == 0 && flags.prec == -1)
+	*/
+	if (n == 0 && flags.prec == -1)
 	{
 		ris[i] = '0';
 		i++;
