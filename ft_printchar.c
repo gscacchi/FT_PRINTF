@@ -12,19 +12,18 @@
 
 #include "ft_printf.h"
 
-int 	ft_printchar(va_list ap, t_flags flags)
+int		ft_printchar(va_list ap, t_flags flags)
 {
-	int i;
-	int b;
-	char c;
+	int		i;
+	int		b;
+	char	c;
 
-	i = 0; 
+	i = 0;
 	b = va_arg(ap, int);
 	c = (char)b;
-
 	if (flags.width > 1)
 	{
-		if (flags.minus == 1) 
+		if (flags.minus == 1)
 			i += ft_putchar(c);
 		while (flags.width-- > 1)
 			i += ft_putchar(' ');

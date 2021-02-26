@@ -119,15 +119,6 @@ int 	ft_x(va_list ap, t_flags flags)
 	if (flags.type == 'X')
 		ft_convert_X(exa);
 	i = 0;
-	/*if (n == -1)
-	{
-		while(i < 8)
-		{
-			ris[i] = exa[15];
-			i++;
-		}
-	}
-	*/
 	if (n == 0 && flags.prec == -1)
 	{
 		ris[i] = '0';

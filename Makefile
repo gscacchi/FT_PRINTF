@@ -12,7 +12,7 @@
 
 
 SRCS	=	ft_printchar.c ft_printf.c ft_printint.c ft_printstr.c ft_x.c \
-			ft_printpoint.c
+			ft_printpoint.c ft_printu.c
 
 OBJS	= ${SRCS:.c=.o}
 CC 		= gcc

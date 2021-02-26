@@ -12,34 +12,38 @@
 
 #include "ft_printf.h"
 
+int		ft_printpercent2(t_flags *flags, int count, char c)
+{
+	if (flags->minus == 1 || flags->zero == 1)
+	{
+		if (flags->minus == 0)
+		{
+			count += ft_print_zero(flags->width - 1);
+			count += ft_putchar(c);
+		}
+		else
+		{
+			count += ft_putchar(c);
+			count += ft_print_space(flags->width - 1);
+		}
+	}
+	else
+	{
+		count += ft_print_space(flags->width - 1);
+		count += ft_putchar(c);
+	}
+	return (count);
+}
+
 int ft_printpercent(t_flags *flags)
 {
-	int count;
-	char c;
+	int 	count;
+	char 	c;
 
 	c = '%';
 	count = 0;
 	if (flags->width > 1)
-	{
-		if (flags->minus == 1 || flags->zero == 1)
-		{
-			if (flags->minus == 0)
-			{
-				count += ft_print_zero(flags->width - 1);
-				count += ft_putchar(c);
-			}
-			else
-			{
-				count += ft_putchar(c);
-				count += ft_print_space(flags->width - 1);
-			}
-		}
-		else
-		{
-			count += ft_print_space(flags->width - 1);
-			count += ft_putchar(c);
-		}
-	}
+		count += ft_printpercent2(flags, count, c);
 	else
 		count += ft_putchar(c);
 	return (count);
@@ -48,6 +52,7 @@ int ft_printpercent(t_flags *flags)
 int 	ft_puts2(char *s, int c)
 {
 	int i;
+	
 	if (!*s)
 		return(0);
 	i = 0;
@@ -160,10 +165,8 @@ int		ft_isdigit(int c)
 
 t_flags		ft_init_flags(int i)
 {
-	//int i;
 	t_flags		flags;
 
-	//i = ft_count(format);
 	flags.prec = - 1;
 	flags.minus = 0;
 	flags.width = 0;
@@ -191,7 +194,6 @@ t_flags 	ft_init_width(t_flags flags, const char *format, va_list ap)
 	else if (ft_isdigit(format[flags.i]))
 		while (ft_isdigit(format[flags.i]))
 			flags.width = flags.width * 10 + ((int)(format[flags.i++] - 48));
-	//va_end(ap);
 	return(flags);	
 }
 
@@ -204,20 +206,17 @@ t_flags		ft_init_precision(t_flags flags, const char *format, va_list ap)
 	{
 		flags.prec = va_arg(ap, int);
 		if (flags.prec < 0)
-			//flags.prec = -flags.prec;
 		flags.i++;
 	}
 	else if (ft_isdigit(format[flags.i]))
 		while (ft_isdigit(format[flags.i]))
 			flags.prec = flags.prec * 10 + ((int)(format[flags.i++] - 48));
-	//va_end(ap);
 	return(flags);
 }
 
 
 t_flags 	ft_parsing(const char *format, t_flags flags, va_list ap)
 {
-	//flags = ft_init_flags(format);
 	while (format[flags.i] == '-' || format[flags.i] == '0')
 	{
 		if (format[flags.i] == '-')
@@ -237,13 +236,6 @@ t_flags 	ft_parsing(const char *format, t_flags flags, va_list ap)
 			flags.i++;
 	flags.type = format[flags.i];
 	return(flags);
-	/*
-	else
-		while (!ft_isalpha(format[flags.i]))
-			flags.i++;
-	flags.type = format[flags.i];
-	return(flags);
-	*/
 }
 
 int 	ft_checkprec(const char *f, int j)
@@ -297,7 +289,6 @@ int 	ft_tipo(t_flags flags, va_list ap)
 	int n;
 
 	n = 0;
-	//flags = ft_parsing(format, flags, ap, i);
 	if (flags.type == 'd' || flags.type == 'i')
 		n += ft_printint(ap, flags);
 	if (flags.type == 'x' || flags.type == 'X')
@@ -338,10 +329,7 @@ int 	ft_printf(const char *format, ...)
 		else if (!format[i])
 			break;
 		else
-		{
-			n += ft_putchar(format[i]);
-			i++;
-		}
+			n += ft_putchar(format[i++]);
 	}
 	va_end (ap);
 	return (n);

@@ -61,8 +61,6 @@ int ft_printpoint(va_list ap, t_flags flags)
 
 	}
 	ris[i] = '\0';
-	//printf("%s\n", reverse1(ris));
-	//return(0);
 
 	i = ft_widthpoint(flags, reverse1(ris));
 	return (i);
